@@ -9,32 +9,32 @@ This project demonstrates how real booking platforms handle **concurrent seat re
 
 # Features
 
-##Seat Management
+## Seat Management
 - View all available seats
 - Real-time seat availability tracking
 - Prevents booking already reserved seats
 
-##Seat Hold Mechanism
+## Seat Hold Mechanism
 - Seats are **temporarily held for 6 minutes**
 - Prevents other users from booking the same seat
 - Expired holds automatically become available again
 
-##Concurrency Control
+## Concurrency Control
 - Uses **pessimistic locking** to prevent race conditions
 - Ensures only one user can hold a seat at a time
 
-##Razorpay Payment Integration
+## Razorpay Payment Integration
 - Creates Razorpay payment orders
 - Secure **server-side signature verification**
 - Confirms booking only after successful payment
 
-##Transaction Management
+## Transaction Management
 - Uses `@Transactional` to ensure atomic operations
 - Maintains database consistency during booking
 
 ---
 
-#System Architecture
+# System Architecture
 
 ```
 User
@@ -88,7 +88,7 @@ Seat Status → BOOKED
 
 ---
 
-#Project Structure
+# Project Structure
 
 ```
 src/main/java/com/movie/movieticket
@@ -137,7 +137,7 @@ Backend:
 
 ---
 
-##3. Create Payment Order
+## 3. Create Payment Order
 
 ```
 POST /payment/create-order
@@ -149,12 +149,12 @@ Backend:
 
 ---
 
-##4. Complete Payment
+## 4. Complete Payment
 User completes payment via Razorpay Checkout.
 
 ---
 
-##5. Confirm Booking
+## 5. Confirm Booking
 
 ```
 POST /payment/confirm
@@ -181,7 +181,7 @@ This ensures that once a seat is being reserved:
 
 ---
 
-#Seat Hold Expiration
+# Seat Hold Expiration
 
 Each seat hold contains:
 
@@ -199,7 +199,7 @@ Seat → AVAILABLE
 
 ---
 
-#API Endpoints
+# API Endpoints
 
 ## Get All Seats
 
@@ -246,7 +246,7 @@ POST /payment/confirm
 
 ---
 
-#Environment Variables
+# Environment Variables
 
 Add Razorpay credentials in `application.properties`.
 
@@ -257,7 +257,7 @@ razorpay.secret=YOUR_SECRET
 
 ---
 
-#Running the Project
+# Running the Project
 
 ## 1. Clone Repository
 
