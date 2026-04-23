@@ -29,12 +29,23 @@ public class BookingService {
     public List<Long> holdSeats(HoldSeatRequest holdSeatRequest) {
         List<Long> holdIds = new ArrayList<>();
 
-        for (Long seatId : holdSeatRequest.getSeatIds()){
-            Seat seat = seatRepository.lockSeat(seatId)
-                    .orElseThrow(() -> new RuntimeException("Seat not found: " + seatId));
+        //Sorting Ids to prevent deadlocks
+        List<Long> requestIds = holdSeatRequest.getSeatIds()
+                .stream()
+                .sorted()
+                .toList();
 
+        //Bulk locking all seat at ones
+        List<Seat> lockedSeats = seatRepository.lockMultipleSeats(requestIds);
+
+        //Ensuring all requested seats are found
+        if (lockedSeats.size() != requestIds.size()) {
+            throw new RuntimeException("One or more seats could not found.");
+        }
+
+        for (Seat seat : lockedSeats) {
             if (seat.getStatus() != SeatStatus.AVAILABLE){
-                throw new RuntimeException("Seat " + seat.getSeatNumber() + " is not available: ");
+                throw new RuntimeException("Seat " + seat.getSeatNumber() + " is already Taken.");
             }
 
             seat.setStatus(SeatStatus.HELD);
@@ -46,11 +57,39 @@ public class BookingService {
                     holdSeatRequest.getUserDetails().getEmail(),
                     holdSeatRequest.getUserDetails().getPhone()
             );
+
             hold = holdRepository.save(hold);
             holdIds.add(hold.getId());
         }
+
         return holdIds;
     }
+//    @Transactional
+//    public List<Long> holdSeats(HoldSeatRequest holdSeatRequest) {
+//        List<Long> holdIds = new ArrayList<>();
+//
+//        for (Long seatId : holdSeatRequest.getSeatIds()){
+//            Seat seat = seatRepository.lockSeat(seatId)
+//                    .orElseThrow(() -> new RuntimeException("Seat not found: " + seatId));
+//
+//            if (seat.getStatus() != SeatStatus.AVAILABLE){
+//                throw new RuntimeException("Seat " + seat.getSeatNumber() + " is not available: ");
+//            }
+//
+//            seat.setStatus(SeatStatus.HELD);
+//            seatRepository.save(seat);
+//
+//            Hold hold = new Hold(
+//                    seat,
+//                    holdSeatRequest.getUserDetails().getName(),
+//                    holdSeatRequest.getUserDetails().getEmail(),
+//                    holdSeatRequest.getUserDetails().getPhone()
+//            );
+//            hold = holdRepository.save(hold);
+//            holdIds.add(hold.getId());
+//        }
+//        return holdIds;
+//    }
 
     @Transactional
     public void confirmBooking(List<Long> holdIds){
