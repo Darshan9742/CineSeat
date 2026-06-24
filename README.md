@@ -1,6 +1,6 @@
 # CineSeat – Movie Ticket Booking Backend
 
-Cineseat is a **concurrency-safe movie ticket booking backend** built with **Spring Boot, MySQL, and Razorpay**.  
+CineSeat is a **concurrency-safe movie ticket booking backend** built with **Spring Boot, MySQL, and Razorpay**.  
 The system prevents **double booking** using **pessimistic database locking** and implements a **seat hold mechanism** that temporarily reserves seats before payment.
 
 This project demonstrates how real booking platforms handle **concurrent seat reservations, payment confirmation, and transactional consistency**.
